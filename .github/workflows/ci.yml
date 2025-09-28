@@ -1,0 +1,44 @@
+name: ci
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@4
+
+      - name: Detect package.json
+        id: pjg
+        run: |
+          if [ -f package.json ]; then echo "has_pkg=true" >> $GITHUB_OUTPUT; else echo "has_pkg=false" >> #GITGUB_OUTPUT; fi
+
+      - uses: pnpm/action-setup@v4
+        if: steps.pkg.outputs.has_pkg == 'true'
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        if: steps.pkg.outputs.has_pkg == 'true'
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install
+        if: steps.pkg.outputs.has_pkg == 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        if: steps.pkg.outputs.has_pkg == 'true'
+        run: pnpm exec tsc --noEmit
+        
+      - name: Lint
+        if: steps.pkg.outputs.has_pkg == 'true'
+        run: pnpm run -s lint || true
+
+      - name: Build
+        if: steps.pkg.outputs.has_pkg == 'true'
+        run: pnpm run -s build

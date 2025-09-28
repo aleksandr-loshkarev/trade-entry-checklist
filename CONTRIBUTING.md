@@ -1,0 +1,3 @@
+- Commit messages: Conventional Commits (feat|fix|chore|docs|refactor|test|ci|build): scope subject
+- В PR: короткое описание, скриншот при UI-изменениях.
+- Перед PR: `pnpm lint` и `pnpm typecheck`.

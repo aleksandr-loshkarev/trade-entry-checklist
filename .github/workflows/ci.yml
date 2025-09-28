@@ -23,11 +23,19 @@ jobs:
         run: |
           if [ -f package.json ]; then echo "has_pkg=true" >> $GITHUB_OUTPUT; else echo "has_pkg=false" >> $GITHUB_OUTPUT; fi
 
+      - name: Setup pnpm
+        if: steps.pkg.outputs.has_pkg == 'true'
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
       - uses: actions/setup-node@v4
         if: steps.pkg.outputs.has_pkg == 'true'
         with:
           node-version: 20
           cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install
         if: steps.pkg.outputs.has_pkg == 'true'

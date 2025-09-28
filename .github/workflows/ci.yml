@@ -23,11 +23,6 @@ jobs:
         run: |
           if [ -f package.json ]; then echo "has_pkg=true" >> $GITHUB_OUTPUT; else echo "has_pkg=false" >> $GITHUB_OUTPUT; fi
 
-      - uses: pnpm/action-setup@v4
-        if: steps.pkg.outputs.has_pkg == 'true'
-        with:
-          version: 9
-
       - uses: actions/setup-node@v4
         if: steps.pkg.outputs.has_pkg == 'true'
         with:
